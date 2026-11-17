@@ -1,0 +1,20 @@
+Issue,Evidence in the data,Treatment
+1 Blank trailing row,"1 row with no ID, no label and a blank string in Age",Drop rows without a label
+2 Age stored as text,dtype str; 19 ages missing,Coerce to numeric; unparseable -> missing
+3 Ages outside the 18-60 policy,"1,105 applicants aged 61-69 (decline rate 3.3%); none under 18",Clip to 18-60 inside the model so every test row is scored; the chatbot applies the policy as an eligibility rule
+4 Impossible LTV,65 rows with LTV = 0 on a positive loan,Set to missing; LightGBM routes missing values natively
+5 Zero income,"626 rows: {'STU': 601, 'missing': 19, 'NONEARNMEM': 6}","Legitimate for students / non-earners: keep, add salary_is_zero flag, income ratios left missing"
+6 Implausible income,"193 rows above Rs 2 lakh a month (max Rs 980,000); likely annual figures",Cap at Rs 3 lakh; the chatbot asks for confirmation above Rs 2 lakh
+7 Heaped self-reported income,"43% of answers are exactly 25,000 / 30,000 / 35,000","Treat as a noisy, unverified field; test its value empirically (Section 9)"
+8 Missing categoricals,"{'Qualifications': 25, 'Employment_Type': 27, 'Age': 19, 'Resident_Type': 19, 'Net_salary': 23, 'Final_Tier': 22, 'Make_Code': 3, 'Model_Description': 3, 'Model_Variant': 3}",Explicit MISSING category (missingness may be informative)
+9 Block missingness,"19 rows miss Qualification, Employment, Age and Residence together",Keep the rows; flag to the business as an incomplete-application route
+"10 One category, two spellings","{'125 CC DISC': 4852, '125CC DISC': 3337}",Normalise spacing before 'CC' with a regular expression
+11 Character-encoding damage,"5,028 model descriptions contain 'â€“' (a mis-decoded dash); 3 have stray spaces","Repair the sequence, upper-case, collapse whitespace"
+12 Rare categories,"Make {'SCOOTY': 9}; variants {'APACHE RR 310': 27, 'SCOOTY PEP PLUS': 9, '165 CC': 1}",Pool categories seen < 30 times into 'infrequent'; unseen test categories go to the same bucket
+13 Duplicates,13 exact duplicates; 3 groups identical in every field but with different decisions,Drop exact duplicates before splitting (leakage); keep the conflicting ones as label noise
+14 High-cardinality pincode,"13,999 pincodes, median 4 applications each","Use the postal hierarchy: zone, 2-digit and 3-digit prefix, with smoothed cross-fitted target encoding"
+15 Redundant fields,Pincode -> Final_Tier has 0 conflicts; Model_Description -> Make / Variant / Product is one-to-one,Derive them from master data in the chatbot instead of asking
+16 Identifier,ID is a row key; decline rate by ID decile only drifts 4.7%-6.1%,Never a feature (stated in the data dictionary)
+17 Sensitive attribute,"Decline rate by gender: Female 5.29%, Male 5.25%","No signal and a fairness risk: not asked, not modelled, kept only to audit outcomes"
+18 Class imbalance,5.26% DECLINED,Handled at five levels (Section 8)
+19 Meaning of the label,"Decision is the underwriter's outcome, not observed repayment",The model estimates P(underwriting would decline); stated as a limitation

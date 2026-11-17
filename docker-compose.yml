@@ -1,0 +1,11 @@
+services:
+  chatbot:
+    build: .
+    ports: ["8501:8501"]
+    env_file: .env                 # GROQ_API_KEY (optional), ABC_PII_KEY, ABC_KILL_SWITCH
+    environment:
+      ABC_AUDIT_DIR: /app/data     # the audit repository lives on the volume below
+    volumes: ["abc_audit:/app/data"]
+    restart: unless-stopped
+volumes:
+  abc_audit:

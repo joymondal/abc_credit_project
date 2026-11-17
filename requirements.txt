@@ -1,0 +1,13 @@
+# Versions used for the submitted run (Python 3.13)
+pandas>=2.2
+numpy>=1.26
+scikit-learn>=1.5        # TargetEncoder (1.3+), infrequent-category one-hot encoding
+lightgbm>=4.3
+imbalanced-learn>=0.12   # imbalance experiment only
+matplotlib>=3.8
+joblib>=1.3
+jupyter
+nbconvert
+streamlit>=1.35          # web chat UI
+groq>=0.9                # optional: LLM interaction layer
+pytest                   # optional: python -m pytest -q tests

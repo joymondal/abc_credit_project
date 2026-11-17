@@ -1,0 +1,89 @@
+{
+ "model_version": "abc-credit-lgbm-2026-11-13",
+ "trained_on_rows": 108409,
+ "positive_class": "DECLINED",
+ "threshold": 0.125,
+ "cost_ratio": 7,
+ "lgbm_params": {
+  "reg_lambda": 5.0,
+  "num_leaves": 7,
+  "n_estimators": 700,
+  "min_child_samples": 50,
+  "learning_rate": 0.03,
+  "colsample_bytree": 0.9
+ },
+ "model_features": [
+  "LTV",
+  "Loan_Amount",
+  "vehicle_value",
+  "down_payment",
+  "pin2",
+  "pin3",
+  "pin_zone",
+  "tier_num",
+  "Model_Description",
+  "Make_Code",
+  "Model_Variant",
+  "Product_Code",
+  "engine_cc",
+  "is_disc",
+  "PAST_LOANS_ACTIVE",
+  "Employment_Type",
+  "Age",
+  "Qualifications",
+  "Net_salary",
+  "salary_is_zero",
+  "price_vs_typical",
+  "loan_to_annual_income"
+ ],
+ "questions": [
+  "price_and_loan",
+  "pincode",
+  "vehicle_model",
+  "active_loans",
+  "employment_type",
+  "age",
+  "qualification",
+  "net_salary"
+ ],
+ "chatbot_slots": [
+  "on_road_price",
+  "loan_amount",
+  "pincode",
+  "area_type",
+  "vehicle_model",
+  "active_loans",
+  "employment_type",
+  "age",
+  "qualification",
+  "net_salary"
+ ],
+ "fields_asked": 9,
+ "age_policy": [
+  18,
+  60
+ ],
+ "x_minutes": 4,
+ "y_seconds": 2,
+ "typical_seconds": 179,
+ "data_sha256": "5b0d329d9ebaaa81ab0e030f7d97093cc4d27be8eadbefba5f7436985446fd6b",
+ "holdout": {
+  "roc_auc": 0.7909091471986361,
+  "pr_auc": 0.18784285745233142,
+  "gini": 0.5818182943972723,
+  "ks": 0.43618448809200494,
+  "brier": 0.04616282202749968,
+  "accuracy": 0.8821141961073702,
+  "precision_declined": 0.19430051813471502,
+  "recall_declined": 0.39473684210526316,
+  "f1_declined": 0.26041666666666663,
+  "share_declined": 0.10681671432524675
+ },
+ "libraries": {
+  "python": "3.13.18",
+  "scikit-learn": "1.9.1",
+  "lightgbm": "4.7.0",
+  "pandas": "3.0.5",
+  "numpy": "2.5.3"
+ }
+}

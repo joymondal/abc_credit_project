@@ -1,0 +1,14 @@
+# Runs on every push: install, test, and check that the container image still builds.
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with: {python-version: "3.13"}
+      - run: pip install -r chatbot/requirements.txt pytest fastapi uvicorn httpx
+      - run: python -m pytest -q tests
+      - run: python check_predictions.py --pred outputs/predictions_holdout.csv
+      - run: docker build -t abc-credit-bot:ci .

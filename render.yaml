@@ -1,0 +1,12 @@
+# Render blueprint (fallback host): New + -> Blueprint -> pick this repository.
+# Free web services sleep after 15 minutes without traffic and wake in about a minute; local files do not persist.
+services:
+  - type: web
+    name: abc-credit-chatbot
+    runtime: docker
+    plan: free
+    region: singapore
+    healthCheckPath: /_stcore/health
+    envVars:
+      - key: ABC_PII_KEY
+        generateValue: true
