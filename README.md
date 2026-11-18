@@ -2,6 +2,9 @@
 
 PGPEM · Predictive and Generative AI · IIM Bangalore — course project.
 
+**Group 10:** Sankalp Gharmalkar (2511228) · Vrushabh Nirwan (2511046) · Rushabh Bothara (2511341) · Amit Telang (2511488) ·
+Yagneshkumar Ahir (2511333) · Joy Mondal (2516037) · Nitin Eshwar Harikant (2516039)
+
 A trained model decides; a chatbot asks the questions and explains the outcome.
 
 **Live app:** _paste your Streamlit link here after deploying_  ·  **Step-by-step guide:** `docs/ABC_Credit_Chatbot_Step_by_Step_Guide.pdf`
@@ -33,7 +36,7 @@ The training data is not in the repository and is not needed by the app. Use mad
 | `chatbot/llm.py` | Optional Groq LLM layer: extraction fallback and explanation wording, with guardrails |
 | `chatbot/cli.py`, `chatbot/app_streamlit.py` | Terminal chat and web chat |
 | `chatbot/simulate.py` | Replays hold-out applications through the chatbot; latency; red-team script |
-| `tests/test_project.py`, `tests/test_deploy.py` | Thirteen automated checks (model, chatbot, deployment kit) |
+| `tests/test_project.py`, `tests/test_deploy.py` | 15 automated checks (model, chatbot, deployment kit) |
 | `api.py` | Optional REST scoring service on the same engine |
 | `extensions/langgraph_bot.py` | The chatbot driven by a LangGraph graph (course sessions 17-18) |
 | `Dockerfile`, `docker-compose.yml`, `.env.example`, `.streamlit/config.toml`, `packages.txt`, `.github/workflows/ci.yml` | Deployment kit |
