@@ -36,8 +36,10 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--pred", required=True)
     ap.add_argument("--test")
+    ap.add_argument("--model", default="current", choices=["current", "previous"], help="the model the predictions were made with")
     a = ap.parse_args()
-    df, res = check(a.pred, a.test)
+    folder = os.path.join(HERE, "artifacts") if a.model == "current" else os.path.join(HERE, "artifacts", "previous")
+    df, res = check(a.pred, a.test, os.path.join(folder, "model_meta.json"))
     for name, passed, detail in res:
         print(f"{'PASS' if passed else 'FAIL'}  {name}" + (f"  ({detail})" if detail and not passed else ""))
     print(f"{len(df):,} rows; {int((df['Decision'] == 'DECLINED').sum()):,} DECLINED ({(df['Decision'] == 'DECLINED').mean():.1%})")

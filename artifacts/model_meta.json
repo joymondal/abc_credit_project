@@ -1,9 +1,9 @@
 {
- "model_version": "abc-credit-lgbm-2026-11-13",
+ "model_version": "abc-credit-lgbm-2026-11-19",
  "trained_on_rows": 108409,
  "positive_class": "DECLINED",
- "threshold": 0.125,
- "cost_ratio": 7,
+ "threshold": 0.143,
+ "cost_ratio": 6,
  "lgbm_params": {
   "reg_lambda": 5.0,
   "num_leaves": 7,
@@ -31,10 +31,7 @@
   "Employment_Type",
   "Age",
   "Qualifications",
-  "Net_salary",
-  "salary_is_zero",
-  "price_vs_typical",
-  "loan_to_annual_income"
+  "price_vs_typical"
  ],
  "questions": [
   "price_and_loan",
@@ -43,8 +40,7 @@
   "active_loans",
   "employment_type",
   "age",
-  "qualification",
-  "net_salary"
+  "qualification"
  ],
  "chatbot_slots": [
   "on_road_price",
@@ -55,29 +51,28 @@
   "active_loans",
   "employment_type",
   "age",
-  "qualification",
-  "net_salary"
+  "qualification"
  ],
- "fields_asked": 9,
+ "fields_asked": 8,
  "age_policy": [
   18,
   60
  ],
  "x_minutes": 4,
  "y_seconds": 2,
- "typical_seconds": 179,
+ "typical_seconds": 164,
  "data_sha256": "5b0d329d9ebaaa81ab0e030f7d97093cc4d27be8eadbefba5f7436985446fd6b",
  "holdout": {
-  "roc_auc": 0.7909091471986361,
-  "pr_auc": 0.18784285745233142,
-  "gini": 0.5818182943972723,
-  "ks": 0.43618448809200494,
-  "brier": 0.04616282202749968,
-  "accuracy": 0.8821141961073702,
-  "precision_declined": 0.19430051813471502,
-  "recall_declined": 0.39473684210526316,
-  "f1_declined": 0.26041666666666663,
-  "share_declined": 0.10681671432524675
+  "roc_auc": 0.7901952695974188,
+  "pr_auc": 0.18605878457214453,
+  "gini": 0.5803905391948376,
+  "ks": 0.4370701361523759,
+  "brier": 0.04620651500690517,
+  "accuracy": 0.9002398302739599,
+  "precision_declined": 0.20687679083094557,
+  "recall_declined": 0.31666666666666665,
+  "f1_declined": 0.2502599653379549,
+  "share_declined": 0.08048150539618117
  },
  "libraries": {
   "python": "3.13.18",

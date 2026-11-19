@@ -126,31 +126,69 @@ class Slot:
 
 _ARTIFACT_CACHE: dict = {}
 
+# Selectable models. "current" is the default everywhere; "previous" is kept so that the two can be compared
+# side by side. Each folder holds model_final.joblib and model_meta.json; the conversation, the cut-off and
+# the reasons all follow the selected model's metadata, so nothing else needs to change when a model is switched.
+MODEL_FOLDERS = {"current": DEFAULT_ARTIFACTS, "previous": os.path.join(DEFAULT_ARTIFACTS, "previous")}
+DEFAULT_MODEL = "current"
+
+
+def model_folder(model: str | None = None) -> str:
+    """Folder of a model by key. No key: the ABC_MODEL environment variable, else the default (current) model."""
+    key = (model or os.environ.get("ABC_MODEL") or DEFAULT_MODEL).strip().lower()
+    if key not in MODEL_FOLDERS:
+        raise ValueError(f"Unknown model '{key}'. Choose one of: {', '.join(MODEL_FOLDERS)}")
+    return MODEL_FOLDERS[key]
+
+
+def available_models() -> list[dict]:
+    """The models that are installed, default first, with the facts a person needs to choose between them."""
+    out = []
+    for key, folder in MODEL_FOLDERS.items():
+        path = os.path.join(folder, "model_meta.json")
+        if not (os.path.exists(path) and os.path.exists(os.path.join(folder, "model_final.joblib"))):
+            continue
+        m = json.load(open(path))
+        income = "net_salary" in m.get("chatbot_slots", [])
+        out.append({"key": key, "folder": folder, "version": m["model_version"], "threshold": m["threshold"],
+                    "cost_ratio": m.get("cost_ratio"), "questions": m.get("fields_asked"), "asks_income": income,
+                    "default": key == DEFAULT_MODEL,
+                    "label": f"{'Current' if key == DEFAULT_MODEL else key.capitalize()} · {m['model_version'][-10:]} · "
+                             f"cost ratio {m.get('cost_ratio')} · cut-off {m['threshold']} · {m.get('fields_asked')} questions"
+                             f"{' (asks income)' if income else ' (no income)'}"})
+    return out
+
 
 def load_artifacts(folder: str = DEFAULT_ARTIFACTS) -> dict:
-    """Load the pipeline, metadata and master data once per process."""
+    """Load the pipeline, metadata and master data once per process and per model folder."""
     if folder not in _ARTIFACT_CACHE:
         model_path = os.path.join(folder, "model_final.joblib")
         with open(model_path, "rb") as f:
             sha = hashlib.sha256(f.read()).hexdigest()
+        ref_path = os.path.join(folder, "reference_data.json")
+        if not os.path.exists(ref_path):              # the vehicle catalogue and pincode tables are shared
+            ref_path = os.path.join(DEFAULT_ARTIFACTS, "reference_data.json")
         _ARTIFACT_CACHE[folder] = {
             "pipe": joblib.load(model_path),
             "meta": json.load(open(os.path.join(folder, "model_meta.json"))),
-            "ref": json.load(open(os.path.join(folder, "reference_data.json"))),
+            "ref": json.load(open(ref_path)),
             "sha256": sha,
         }
     return _ARTIFACT_CACHE[folder]
 
 
 class LoanChatbot:
-    def __init__(self, artifacts: str = DEFAULT_ARTIFACTS, audit: AuditLog | None = None,
-                 llm=None, channel: str = "cli"):
+    def __init__(self, artifacts: str | None = None, audit: AuditLog | None = None,
+                 llm=None, channel: str = "cli", model: str | None = None):
+        # `model` picks a model by key ("current" or "previous"); `artifacts` (a folder) still works and wins if given
+        artifacts = artifacts or model_folder(model)
+        self.model_key = next((k for k, f in MODEL_FOLDERS.items() if os.path.abspath(f) == os.path.abspath(artifacts)), "custom")
         a = load_artifacts(artifacts)
         self.pipe, self.meta, self.ref, self.model_sha = a["pipe"], a["meta"], a["ref"], a["sha256"]
         self.threshold = float(self.meta["threshold"])
         self.catalogue = self.ref["vehicle_catalogue"]
         # ABC_AUDIT_DIR lets a deployment point the audit repository at a mounted volume (e.g. /app/data)
-        audit_dir = os.environ.get("ABC_AUDIT_DIR") or os.path.join(os.path.dirname(artifacts.rstrip("/")), "logs")
+        audit_dir = os.environ.get("ABC_AUDIT_DIR") or os.path.join(os.path.dirname(HERE), "logs")
         if audit is None:
             try:
                 audit = AuditLog(os.path.join(audit_dir, "audit.db"))
@@ -552,7 +590,8 @@ class LoanChatbot:
             "Model_Description": s["vehicle_model"], "Model_Variant": v["Model_Variant"],
             "Loan_Amount": float(s["loan_amount"]),
             "LTV": round(100 * s["loan_amount"] / s["on_road_price"], 2),
-            "Resident_Type": s.get("residence_type"), "Net_salary": s.get("net_salary"),
+            "Resident_Type": s.get("residence_type"),
+            "Net_salary": s.get("net_salary"),     # asked only by a model whose metadata lists it; else None
             "Final_Tier": s.get("_tier"),
             "PAST_LOANS_ACTIVE": (None if "active_loans" not in s else
                                   "PAST_LOANS_ACTIVE" if s["active_loans"] else "NO_PAST_LOANS"),

@@ -1,5 +1,8 @@
-# Optional extras: the REST scoring service (api.py) and the LangGraph example (extensions/langgraph_bot.py)
+# Optional extras: the REST scoring service (api.py), the LangGraph example (extensions/langgraph_bot.py)
+# and the two extra model families compared in peer_checks.py
 fastapi>=0.110
 uvicorn>=0.29
 httpx>=0.27          # needed by FastAPI's test client
 langgraph>=1.0
+xgboost>=3.0
+catboost>=1.2

@@ -1,6 +1,7 @@
 """Score a file of loan applications with the saved pipeline.
 
     python predict.py --test path/to/test.csv --out predictions.csv
+    python predict.py --test path/to/test.csv --out predictions.csv --model previous     # the 13 Nov model, for comparison
 
 Output: one row per ID with Decision (APPROVED / DECLINED) and Probability_DECLINED.
 Every row with an ID is scored - unseen categories, blanks and impossible values cannot break it.
@@ -52,6 +53,9 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--test", required=True)
     ap.add_argument("--out", default="predictions.csv")
+    ap.add_argument("--model", default="current", choices=["current", "previous"],
+                    help="current (default): cost ratio 6, no income.  previous: cost ratio 7, uses Net_salary")
     a = ap.parse_args()
-    res = score_file(a.test, a.out)
+    folder = "artifacts" if a.model == "current" else "artifacts/previous"
+    res = score_file(a.test, a.out, f"{folder}/model_final.joblib", f"{folder}/model_meta.json")
     print(f"{len(res):,} rows scored -> {a.out}", res["Decision"].value_counts().to_dict())

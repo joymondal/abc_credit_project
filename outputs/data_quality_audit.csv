@@ -3,9 +3,9 @@ Issue,Evidence in the data,Treatment
 2 Age stored as text,dtype str; 19 ages missing,Coerce to numeric; unparseable -> missing
 3 Ages outside the 18-60 policy,"1,105 applicants aged 61-69 (decline rate 3.3%); none under 18",Clip to 18-60 inside the model so every test row is scored; the chatbot applies the policy as an eligibility rule
 4 Impossible LTV,65 rows with LTV = 0 on a positive loan,Set to missing; LightGBM routes missing values natively
-5 Zero income,"626 rows: {'STU': 601, 'missing': 19, 'NONEARNMEM': 6}","Legitimate for students / non-earners: keep, add salary_is_zero flag, income ratios left missing"
-6 Implausible income,"193 rows above Rs 2 lakh a month (max Rs 980,000); likely annual figures",Cap at Rs 3 lakh; the chatbot asks for confirmation above Rs 2 lakh
-7 Heaped self-reported income,"43% of answers are exactly 25,000 / 30,000 / 35,000","Treat as a noisy, unverified field; test its value empirically (Section 9)"
+5 Zero income,"626 rows: {'STU': 601, 'missing': 19, 'NONEARNMEM': 6}",Legitimate for students / non-earners: kept as is with a salary_is_zero flag while income was a candidate; the field is not used by the final model (Section 9)
+6 Implausible income,"193 rows above Rs 2 lakh a month (max Rs 980,000); likely annual figures",Capped at Rs 3 lakh while income was a candidate; the field is not used by the final model (Section 9)
+7 Heaped self-reported income,"43% of answers are exactly 25,000 / 30,000 / 35,000","Treat as a noisy, unverified field; tested in Section 9, found to add nothing, and removed from the model and the chatbot"
 8 Missing categoricals,"{'Qualifications': 25, 'Employment_Type': 27, 'Age': 19, 'Resident_Type': 19, 'Net_salary': 23, 'Final_Tier': 22, 'Make_Code': 3, 'Model_Description': 3, 'Model_Variant': 3}",Explicit MISSING category (missingness may be informative)
 9 Block missingness,"19 rows miss Qualification, Employment, Age and Residence together",Keep the rows; flag to the business as an incomplete-application route
 "10 One category, two spellings","{'125 CC DISC': 4852, '125CC DISC': 3337}",Normalise spacing before 'CC' with a regular expression

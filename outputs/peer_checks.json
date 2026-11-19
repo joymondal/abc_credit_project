@@ -1,0 +1,125 @@
+{
+ "augment": {
+  "synthetic_rows_added": 22792,
+  "decline_share_after": 0.2171,
+  "leaky_split_test_all_rows": {
+   "roc_auc": 0.9375,
+   "pr_auc": 0.8819,
+   "rows": 26241,
+   "declined_share": 0.2171
+  },
+  "leaky_split_test_real_rows_only": {
+   "roc_auc": 0.7775,
+   "pr_auc": 0.1475,
+   "rows": 21665
+  },
+  "split_first_then_synthesise_real_holdout": {
+   "roc_auc": 0.7612,
+   "pr_auc": 0.1446,
+   "mean_p": 0.1017,
+   "actual_rate": 0.0526
+  },
+  "our_reported_holdout": {
+   "roc_auc": 0.7902,
+   "pr_auc": 0.1861
+  }
+ },
+ "features": {
+  "ours_shipped_features": {
+   "roc_auc": 0.7845,
+   "pr_auc": 0.1789
+  },
+  "ours_plus_22_handmade": {
+   "roc_auc": 0.7838,
+   "pr_auc": 0.1785
+  },
+  "n_shipped_features": 19,
+  "extra_features": [
+   "loan_to_salary",
+   "ltv_x_loan",
+   "salary_per_age_year",
+   "is_young",
+   "is_senior",
+   "young_high_ltv",
+   "education_level",
+   "employment_stability",
+   "profile_score",
+   "is_student",
+   "is_informal",
+   "low_education",
+   "informal_low_edu",
+   "has_past_loan",
+   "past_loan_high_ltv",
+   "past_loan_young",
+   "new_borrower_informal",
+   "repeat_risk",
+   "is_metro",
+   "is_rural",
+   "loan_vs_tier_median",
+   "composite_risk"
+  ]
+ },
+ "monotone": {
+  "cv_unconstrained": {
+   "roc_auc": 0.7845,
+   "pr_auc": 0.1789
+  },
+  "cv_ltv_constrained": {
+   "roc_auc": 0.7845,
+   "pr_auc": 0.1788
+  },
+  "shipped_model_ltv_sweep": {
+   "applicants": 2000,
+   "ltv_grid": [
+    50,
+    55,
+    60,
+    65,
+    70,
+    75,
+    80,
+    85,
+    90,
+    95
+   ],
+   "mean_p_declined_by_ltv": [
+    0.0057,
+    0.0062,
+    0.0063,
+    0.0098,
+    0.0119,
+    0.0225,
+    0.0355,
+    0.0697,
+    0.1104,
+    0.1645
+   ],
+   "share_with_any_fall_over_1pt": 0.012,
+   "largest_fall": 0.0274,
+   "share_decline_to_approve_flip_as_loan_grows": 0.0005
+  }
+ },
+ "families": [
+  {
+   "model": "LightGBM (shipped settings)",
+   "roc_auc": 0.7845,
+   "pr_auc": 0.1789,
+   "mean_p": 0.0525,
+   "seconds": 22
+  },
+  {
+   "model": "XGBoost",
+   "roc_auc": 0.7842,
+   "pr_auc": 0.178,
+   "mean_p": 0.0526,
+   "seconds": 28
+  },
+  {
+   "model": "CatBoost",
+   "roc_auc": 0.7839,
+   "pr_auc": 0.1736,
+   "mean_p": 0.0521,
+   "seconds": 42
+  }
+ ]
+}

@@ -1,0 +1,27 @@
+persona,profile,loan_to_value,decision,decision_source,p_declined,n_reasons,main_reason,latency_ms
+P01-60,"Salaried graduate, Bengaluru, scooter",60,APPROVED,model,0.0055,3,a healthy down payment (loan-to-value 60%),86.0
+P01-80,"Salaried graduate, Bengaluru, scooter",80,APPROVED,model,0.0313,3,your employment type,52.3
+P01-90,"Salaried graduate, Bengaluru, scooter",90,DECLINED,model,0.1519,3,the loan covers a high share of the vehicle's price (loan-to-value 90%),70.3
+P01-96,"Salaried graduate, Bengaluru, scooter",96,DECLINED,model,0.1972,3,the loan covers a high share of the vehicle's price (loan-to-value 96%),53.8
+P02-60,"Shop owner, Pune, commuter motorcycle",60,APPROVED,model,0.003,3,a healthy down payment (loan-to-value 60%),64.7
+P02-80,"Shop owner, Pune, commuter motorcycle",80,APPROVED,model,0.0151,3,our lending experience in your area,53.6
+P02-90,"Shop owner, Pune, commuter motorcycle",90,APPROVED,model,0.0488,3,our lending experience in your area,73.4
+P02-96,"Shop owner, Pune, commuter motorcycle",96,APPROVED,model,0.064,3,our lending experience in your area,52.2
+P03-60,"Farmer, Jhansi district, moped",60,APPROVED,model,0.0062,3,a healthy down payment (loan-to-value 60%),53.5
+P03-80,"Farmer, Jhansi district, moped",80,APPROVED,model,0.0366,3,your age band,53.4
+P03-90,"Farmer, Jhansi district, moped",90,APPROVED,model,0.0963,3,your age band,50.0
+P03-96,"Farmer, Jhansi district, moped",96,DECLINED,model,0.1738,3,the loan covers a high share of the vehicle's price (loan-to-value 96%),64.4
+P04-60,"First-time borrower aged 23, Lucknow, sports motorcycle",60,APPROVED,model,0.0067,3,a healthy down payment (loan-to-value 60%),78.4
+P04-80,"First-time borrower aged 23, Lucknow, sports motorcycle",80,APPROVED,model,0.0449,3,our lending experience in your area,63.8
+P04-90,"First-time borrower aged 23, Lucknow, sports motorcycle",90,DECLINED,model,0.175,3,the loan covers a high share of the vehicle's price (loan-to-value 90%),61.0
+P04-96,"First-time borrower aged 23, Lucknow, sports motorcycle",96,DECLINED,model,0.2501,3,the loan covers a high share of the vehicle's price (loan-to-value 96%),60.2
+P05-60,"Daily-wage worker, Indore, scooter",60,APPROVED,model,0.0147,2,a healthy down payment (loan-to-value 60%),57.4
+P05-80,"Daily-wage worker, Indore, scooter",80,APPROVED,model,0.0814,2,a healthy down payment (loan-to-value 80%),51.6
+P05-90,"Daily-wage worker, Indore, scooter",90,DECLINED,model,0.2646,3,the loan covers a high share of the vehicle's price (loan-to-value 90%),54.9
+P05-96,"Daily-wage worker, Indore, scooter",96,DECLINED,model,0.3911,3,the loan covers a high share of the vehicle's price (loan-to-value 96%),53.7
+P06-60,"Post-graduate professional, Hyderabad, electric scooter",60,APPROVED,model,0.0036,3,a healthy down payment (loan-to-value 60%),49.0
+P06-80,"Post-graduate professional, Hyderabad, electric scooter",80,APPROVED,model,0.0122,3,the vehicle model chosen,57.4
+P06-90,"Post-graduate professional, Hyderabad, electric scooter",90,APPROVED,model,0.0263,3,the vehicle model chosen,53.7
+P06-96,"Post-graduate professional, Hyderabad, electric scooter",96,APPROVED,model,0.0363,3,the vehicle model chosen,48.8
+R01,"Retired applicant aged 65, Bengaluru, scooter",70,DECLINED,policy_rule,,0,,9.6
+R02,"Applicant aged 17, Pune, scooter",70,DECLINED,policy_rule,,0,,9.9

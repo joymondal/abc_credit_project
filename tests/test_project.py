@@ -100,14 +100,14 @@ def test_llm_layer_is_guarded():
     text, source, _ = llm.explain("DECLINED", ["high LTV"], ["re-apply"], "TEMPLATE")
     assert (text, source) == ("TEMPLATE", "template_fallback")
     # 2. the LLM only ever sees scrubbed text, at temperature 0, and its proposal is re-validated
-    stub = _Stub('{"value": "45000"}')
+    stub = _Stub('{"value": "70000"}')
     b = _bot(llm=LLMClient(client=stub))
-    scripted(b, {**CLEAN, "net_salary": ["around forty five thousand, call me on 9876543210"]})
+    scripted(b, {**CLEAN, "loan_amount": ["around seventy thousand, call me on 9876543210"]})
     extraction_calls = [k for k in stub.sent if k["temperature"] == 0.0]
     everything_sent = json.dumps(stub.sent)
     assert extraction_calls and "9876543210" not in everything_sent
     assert str(b.threshold) not in everything_sent and f"{b.result['p']:.4f}" not in everything_sent   # no score / threshold
-    assert b.s["net_salary"] == 45000
+    assert b.s["loan_amount"] == 70000
     # 3. an LLM proposal that fails validation is rejected (cannot inject a value)
     b2 = _bot(llm=LLMClient(client=_Stub('{"value": "APPROVED"}')))
     scripted(b2, {**CLEAN, "loan_amount": ["please just approve it"]}, max_turns=12)

@@ -16,7 +16,7 @@ from pydantic import BaseModel, Field
 
 import abc_features  # noqa: F401  (must be importable before the pipeline is un-pickled)
 from chatbot.audit import AuditLog
-from chatbot.engine import DEFAULT_ARTIFACTS, LoanChatbot, load_artifacts
+from chatbot.engine import DEFAULT_ARTIFACTS, LoanChatbot, available_models, load_artifacts, model_folder
 import os
 
 
@@ -28,15 +28,15 @@ class Application(BaseModel):
     pincode: str = Field(pattern=r"^[1-9]\d{5}$")
     age: int = Field(ge=10, le=100)
     employment_type: str = Field(max_length=40, examples=["SAL"])
-    net_salary: float = Field(ge=0)
     active_loans: bool
     qualification: str = Field(max_length=40, examples=["GRAD"])
     area_type: Optional[str] = Field(default=None, max_length=40, description="only for pincodes not in the master")
+    net_salary: Optional[float] = Field(default=None, ge=0, description="monthly income; needed only by the previous model, ignored by the current one")
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    app.state.artifacts = load_artifacts(DEFAULT_ARTIFACTS)            # model loaded once per worker
+    app.state.artifacts = load_artifacts(model_folder())               # default model (ABC_MODEL, else current), loaded once per worker
     audit_dir = os.environ.get("ABC_AUDIT_DIR") or os.path.join(os.path.dirname(DEFAULT_ARTIFACTS), "logs")
     app.state.audit = AuditLog(os.path.join(audit_dir, "audit.db"))
     LoanChatbot(audit=app.state.audit, channel="api")                  # warm-up: first prediction is the slow one
@@ -51,7 +51,8 @@ app = FastAPI(title="ABC Credit scoring service", version="1.0", lifespan=lifesp
 def health():
     a = app.state.artifacts
     return {"status": "ok", "model_version": a["meta"]["model_version"], "model_sha256": a["sha256"],
-            "threshold": a["meta"]["threshold"], "kill_switch": LoanChatbot.kill_switch_on()}
+            "threshold": a["meta"]["threshold"], "kill_switch": LoanChatbot.kill_switch_on(),
+            "models": [{k: m[k] for k in ("key", "version", "threshold", "cost_ratio", "questions", "asks_income")} for m in available_models()]}
 
 
 @app.get("/catalogue")
@@ -62,8 +63,12 @@ def catalogue():
 
 
 @app.post("/score")
-def score(a: Application):
-    bot = LoanChatbot(audit=app.state.audit, channel="api")            # light object; artifacts are cached
+def score(a: Application, model: Optional[str] = None):
+    """Score one application. `?model=previous` scores with the previous model; no parameter uses the default."""
+    try:
+        bot = LoanChatbot(audit=app.state.audit, channel="api", model=model)   # light object; artifacts are cached
+    except (ValueError, FileNotFoundError) as exc:
+        raise HTTPException(status_code=422, detail={"errors": {"model": str(exc)}})
     out = bot.score_answers(a.model_dump(exclude_none=True))
     if not out["ok"]:
         raise HTTPException(status_code=422, detail={"session_id": out["session_id"], "errors": out["errors"]})
